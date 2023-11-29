@@ -1,0 +1,144 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	ViewData["Title"] = "Employee Data";
+}
+@model List<Employee>
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table table-responsive table-hover" border="1">
+	<tr>
+		<th>ID</th>
+		<th>Name</th>
+		<th>Manager ID</th>
+		<th>Employee Salary</th>
+	</tr>
+	@foreach (var employee in Model)
+	{
+		<tr>
+			<td>@employee.ID</td>
+			<td>@employee.Name</td>
+			<td>@(employee.ManagerID.HasValue ? employee.ManagerID.ToString() : "N/A")</td>
+			<td>@employee.EmployeeSalary</td>
+		</tr>
+	}
+</table>
+<div class="container-lg">
+	<button class="btn" id="EmployeeManagerName">EmployeeManagerName</button>
+	<button class="btn" id="ManageNameAndEmployee">ManageNameAndEmployee</button>
+	<button class="btn" id="ManagerNameSalary">ManagerNameSalary</button>
+	<button class="btn" id="SecondHighestSalaryEmployee">SecondHighestSalaryEmployee</button>
+</div>
+<div>
+	<h1>Output</h1>
+	<table class="table table-responsive table-hover" id="output">
+	</table>
+</div>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+	$(document).ready(function () {
+		$("#EmployeeManagerName").click(function () {
+			$.ajax({
+				url: '/Employee/EmployeeManagerName',
+				type: 'GET',
+				success: function (data) {
+					var result = `<tr>
+						<th> Employee Name</th>
+						<th>Manager Name</th>
+				</tr>`;
+					console.log(data);
+					data.forEach(element => {
+						result += ` <tr>
+								<td>${element.employeeName}</td>
+								<td>${element.managerName}</td>
+								</tr> `
+					})
+
+					$('#output').empty();
+					$('#output').append(result);
+				},
+				error: function (error) {
+					console.error('Error:', error);
+				}
+			});
+		});
+		$("#ManageNameAndEmployee").click(function () {
+			$.ajax({
+				url: '/Employee/ManageNameAndEmployee',
+				type: 'GET',
+				success: function (data) {
+					var result = `<tr>
+							<th> Manager Name</th>
+							<th>Employee Counts</th>
+					</tr>`;
+					console.log(data);
+					data.forEach(element => {
+						result += ` <tr>
+										<td>${element.managerName}</td>
+										<td>${element.numberOfEmployees}</td>
+									</tr> `
+					})
+
+					$('#output').empty();
+					$('#output').append(result);
+				},
+				error: function (error) {
+					console.error('Error:', error);
+				}
+			});
+		});
+		$("#ManagerNameSalary").click(function () {
+			$.ajax({
+				url: '/Employee/ManagerNameSalary',
+				type: 'GET',
+				success: function (data) {
+					var result = `<tr>
+								<th>Manager Name</th>
+								<th>Manager Salary</th>
+						</tr>`;
+					console.log(data);
+					data.forEach(element => {
+						result += ` <tr>
+											<td>${element.managerName}</td>
+												<td>${element.managerSalary}</td>
+										</tr>`
+					})
+
+					$('#output').empty();
+					$('#output').append(result);
+				},
+				error: function (error) {
+					console.error('Error:', error);
+				}
+			});
+		});
+
+		$("#SecondHighestSalaryEmployee").click(function () {
+			$.ajax({
+				url: '/Employee/SecondHighestSalaryEmployee',
+				type: 'GET',
+				success: function (data) {
+					var result = `<tr>
+									<th>Manager Name</th>
+									<th>Employee Salary</th>
+							</tr>`;
+					console.log(data);
+
+					result += ` <tr>
+												<td>${data.managerName}</td>
+															<td>${data.employeeSalary}</td>
+											</tr>`
+
+
+					$('#output').empty();
+					$('#output').append(result);
+				},
+				error: function (error) {
+					console.error('Error:', error);
+				}
+			});
+		});
+	});
+</script>
